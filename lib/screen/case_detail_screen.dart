@@ -28,6 +28,9 @@ class _CaseDetailScreenState extends BaseState<CaseDetailScreen> {
   final _descFocusNode = FocusNode();
   String descText = '';
   TextEditingController descTextController = TextEditingController();
+  TextEditingController pdfName1TextController = TextEditingController();
+  TextEditingController pdfName2TextController = TextEditingController();
+  TextEditingController pdfName3TextController = TextEditingController();
   File _imageFile, _videoFile, _pdfFile1, _pdfFile2, _pdfFile3;
   Uint8List _thumbnail;
   String _pdfFileName1, _pdfFileName2, _pdfFileName3;
@@ -333,8 +336,8 @@ class _CaseDetailScreenState extends BaseState<CaseDetailScreen> {
                       children: [
                         Flexible(
                           child: TextField(
-                            focusNode: _descFocusNode,
-                            controller: descTextController,
+                            controller: pdfName1TextController,
+                            enabled: false,
                             maxLines: 1,
                             style: Theme.of(context).textTheme.headline3,
                             decoration: InputDecoration(
@@ -354,12 +357,14 @@ class _CaseDetailScreenState extends BaseState<CaseDetailScreen> {
                                 allowedExtensions: ['pdf'],
                                     allowCompression: true);
                             if (result != null) {
-                              PlatformFile platformFile = result.files.first;
-                              _pdfFile1 = File(result.files.single.path);
-                              _pdfFileName1 = platformFile.name;
+                              setState(() {
+                                PlatformFile platformFile = result.files.first;
+                                _pdfFile1 = File(result.files.single.path);
+                                _pdfFileName1 = platformFile.name;
+                                pdfName1TextController.text  = _pdfFileName1;
+                              });
                             } else {
                               // User canceled the picker
-                              Navigator.of(context).pop();
                             }
                           },
                           child: Text('Select'),
@@ -373,8 +378,8 @@ class _CaseDetailScreenState extends BaseState<CaseDetailScreen> {
                       children: [
                         Flexible(
                           child: TextField(
-                            focusNode: _descFocusNode,
-                            controller: descTextController,
+                            controller: pdfName2TextController,
+                            enabled: false,
                             maxLines: 1,
                             style: Theme.of(context).textTheme.headline3,
                             decoration: InputDecoration(
@@ -390,12 +395,16 @@ class _CaseDetailScreenState extends BaseState<CaseDetailScreen> {
                           onPressed: () async {
                             FilePickerResult result = await FilePicker.platform
                                 .pickFiles(
-                                    allowedExtensions: ['pdf'],
+                                type: FileType.custom,
+                                allowedExtensions: ['pdf'],
                                     allowCompression: true);
                             if (result != null) {
-                              PlatformFile platformFile = result.files.first;
-                              _pdfFile2 = File(result.files.single.path);
-                              _pdfFileName2 = platformFile.name;
+                              setState(() {
+                                PlatformFile platformFile = result.files.first;
+                                _pdfFile2 = File(result.files.single.path);
+                                _pdfFileName2 = platformFile.name;
+                                pdfName2TextController.text  = _pdfFileName2;
+                              });
                             } else {
                               // User canceled the picker
                             }
@@ -411,8 +420,8 @@ class _CaseDetailScreenState extends BaseState<CaseDetailScreen> {
                       children: [
                         Flexible(
                           child: TextField(
-                            focusNode: _descFocusNode,
-                            controller: descTextController,
+                            controller: pdfName3TextController,
+                            enabled: false,
                             maxLines: 1,
                             style: Theme.of(context).textTheme.headline3,
                             decoration: InputDecoration(
@@ -428,13 +437,17 @@ class _CaseDetailScreenState extends BaseState<CaseDetailScreen> {
                           onPressed: () async {
                             FilePickerResult result = await FilePicker.platform
                                 .pickFiles(
-                                    allowedExtensions: ['pdf'],
+                                type: FileType.custom,
+                                allowedExtensions: ['pdf'],
                                     allowCompression: true);
 
                             if (result != null) {
-                              PlatformFile platformFile = result.files.first;
-                              _pdfFile3 = File(result.files.single.path);
-                              _pdfFileName1 = platformFile.name;
+                              setState(() {
+                                PlatformFile platformFile = result.files.first;
+                                _pdfFile3 = File(result.files.single.path);
+                                _pdfFileName3 = platformFile.name;
+                                pdfName3TextController.text  = _pdfFileName3;
+                              });
                             } else {
                               // User canceled the picker
                             }

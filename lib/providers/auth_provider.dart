@@ -16,6 +16,7 @@ class AuthProvider extends BaseProvider {
   }
 
   Future<UserModel> authenticate(String email, String password) async {
+    showLoadingIndicator(hint: "Signing In...");
     final response = await super.apiClient.callWebService(
         path: ApiConstant.API_USER_LOGIN,
         method: ApiMethod.POST,
@@ -24,9 +25,11 @@ class AuthProvider extends BaseProvider {
           'password': password,
         },
         withAuth: false);
+    hideLoadingIndicator();
     response.fold((l) {
       AppLog.print('left----> ' + l.toString());
       showErrorToast(l.toString());
+      currentUser = null;
     }, (r) {
       AppLog.print('right----> ' + r.toString());
       currentUser = UserModel.fromJson(r);
@@ -37,12 +40,14 @@ class AuthProvider extends BaseProvider {
     return currentUser;
   }
 
-  Future<bool> forgotPassword(String email) async {
+  Future<bool> forgotPassword() async {
+    showLoadingIndicator();
     final response = await super.apiClient.callWebService(
-        path: ApiConstant.API_FORGOT_PASSWORD + email,
+        path: ApiConstant.API_FORGOT_PASSWORD,
         method: ApiMethod.POST,
-        body: {'email': email},
+        body: {'username': pref.user.username},
         withAuth: false);
+    hideLoadingIndicator();
     return response.fold((l) {
       AppLog.print('left----> ' + l.toString());
       showErrorToast(l.toString());
@@ -54,10 +59,16 @@ class AuthProvider extends BaseProvider {
   }
 
   Future<bool> changePassword(String oldPassword, String newPassword) async {
+    showLoadingIndicator(hint: 'Updating Password');
     final response = await super.apiClient.callWebService(
         path: ApiConstant.API_CHANGE_PASSWORD,
         method: ApiMethod.POST,
-        body: {'oldpassword': oldPassword, 'newpassword': newPassword});
+        body: {
+          'oldpassword': oldPassword,
+          'newpassword': newPassword,
+          'username': pref.user.username
+        });
+    hideLoadingIndicator();
     return response.fold((l) {
       AppLog.print('left----> ' + l.toString());
       showErrorToast(l.toString());

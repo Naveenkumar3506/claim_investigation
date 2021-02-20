@@ -100,7 +100,7 @@ class ApiClient {
               response.stream.transform(utf8.decoder).listen((value) {
                 final jsonResponse = json.decode(value);
                 print(jsonResponse);
-                if (jsonResponse.containsKey('data')) {
+                if (jsonResponse.containsKey('data') && jsonResponse['data'] != null && jsonResponse['data'].toString() != 'null') {
                   return Right(jsonResponse['data']);
                 } else {
                   if (jsonResponse.containsKey('status')) {
@@ -128,7 +128,7 @@ class ApiClient {
       final jsonResponse = json.decode(responseData.body);
       if (jsonResponse is List<dynamic>) {
         return Right(jsonResponse);
-      } else if (jsonResponse.containsKey('data')) {
+      } else if (jsonResponse.containsKey('data') && jsonResponse['data'] != null && jsonResponse['data'].toString() != 'null') {
         return Right(jsonResponse['data']);
       } else {
         if (jsonResponse.containsKey('status')) {

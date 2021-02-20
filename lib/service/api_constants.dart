@@ -4,7 +4,7 @@ class ApiConstant {
   ///
   static const API_USER_LOGIN = 'login';
   static const API_FORGOT_PASSWORD = 'forgot';
-  static const API_CHANGE_PASSWORD = 'ChangePassword';
+  static const API_CHANGE_PASSWORD = 'changePassword';
   static const API_DASHBOARD_DETAIL = 'dashboard';
   static const API_GET_CASE_LIST = 'GetCaseListByUsername';
   static const API_FILE_UPLOAD = 'dashboard';

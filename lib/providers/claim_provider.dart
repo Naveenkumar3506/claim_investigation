@@ -98,4 +98,9 @@ class ClaimProvider extends BaseProvider {
       }
     });
   }
+
+  clearData() {
+    listCases.clear();
+    caseListPageNumber = 1;
+  }
 }

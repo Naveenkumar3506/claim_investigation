@@ -3,6 +3,7 @@ import 'package:claim_investigation/providers/claim_provider.dart';
 import 'package:claim_investigation/router/app_routes.dart';
 import 'package:claim_investigation/screen/home_screen.dart';
 import 'package:claim_investigation/screen/login_screen.dart';
+import 'package:claim_investigation/screen/tabbar_screen.dart';
 import 'package:claim_investigation/service/api_client.dart';
 import 'package:claim_investigation/storage/app_pref.dart';
 import 'package:claim_investigation/util/app_helper.dart';
@@ -79,7 +80,7 @@ class _PreClaimAppState extends State<PreClaimApp> {
             primaryColor: const Color(0xFF0E4179),
           ),
           home: auth.isAuth
-                  ? HomeScreen()
+                  ? TabBarScreen()
                   : LoginScreen(),
           onGenerateRoute: AppRouter.generateRoute,
         ),

@@ -1,6 +1,7 @@
-
 import 'package:claim_investigation/base/base_page.dart';
 import 'package:claim_investigation/providers/auth_provider.dart';
+import 'package:claim_investigation/util/app_helper.dart';
+import 'package:claim_investigation/util/size_constants.dart';
 import 'package:claim_investigation/widgets/adaptive_widgets.dart';
 import 'package:claim_investigation/widgets/app_textfield.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +20,6 @@ class ForgotPasswordScreen extends BasePage {
 class _ForgotPasswordScreenState extends BaseState<BasePage> {
   final _passwordFormKey = GlobalKey<FormState>();
   final _emailTextController = TextEditingController();
-  final _passwordTextController = TextEditingController();
-  bool _passwordObscureText = true;
 
   bool _validateInputs() {
     if (_passwordFormKey.currentState.validate()) {
@@ -36,11 +35,12 @@ class _ForgotPasswordScreenState extends BaseState<BasePage> {
   Future<void> _handleForgotPassword() async {
     if (_validateInputs()) {
       try {
-        showLoadingDialog();
         final success = await Provider.of<AuthProvider>(context, listen: false)
-            .forgotPassword(_emailTextController.text.trim());
-        Navigator.pop(context);
+            .forgotPassword();
         if (success) {
+          showAdaptiveAlertDialog(context: context, title: "Success", content: 'Temporary Password has been sent to your registered Email ID', defaultActionText: 'Ok', defaultAction: () {
+            Navigator.pop(context);
+          });
         } else {}
       } catch (error) {
         Navigator.pop(context);
@@ -50,101 +50,58 @@ class _ForgotPasswordScreenState extends BaseState<BasePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
-      height: double.maxFinite,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-            image: AssetImage('assets/images/ic_bg.png'), fit: BoxFit.cover),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Forgot Password"),
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          iconTheme: IconThemeData(
-            color: Theme.of(context).primaryColor, //change your color here
-          ),
-          title: Text(""),
-          centerTitle: true,
-          elevation: 0,
-          brightness: Brightness.light,
-        ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Form(
-              key: _passwordFormKey,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                     SizedBox(height: 40),
-                      Text(
-                        'Reset Password',
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                      SizedBox(height: 40),
-                      AppFormTextField(
-                        hintText: 'Enter your email',
-                        hintLabel: 'Email ID',
-                        controller: _emailTextController,
-                        ctx: context,
-                        textInputAction: TextInputAction.done,
-                        keyboardType: TextInputType.emailAddress,
-                        onSubmit: (_) {
-                          FocusScope.of(context)
-                              .requestFocus(new FocusNode());
-                        },
-                        validator: (email) {
-                          if (email == "") {
-                            return 'Please enter email Id';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 30),
-                      AppFormTextField(
-                        hintText: 'Enter your new password',
-                        hintLabel: 'Password',
-                        controller: _passwordTextController,
-                        ctx: context,
-                        obscureText: _passwordObscureText,
-                        suffix: IconButton(
-                          icon: _passwordObscureText
-                              ? Icon(Icons.visibility)
-                              : Icon(Icons.visibility_off),
-                          onPressed: () {
-                            setState(() {
-                              _passwordObscureText = !_passwordObscureText;
-                            });
-                          },
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Form(
+            key: _passwordFormKey,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                        height: appHelper.isTablet(context)
+                            ? SizeConfig.screenHeight * 0.2
+                            : SizeConfig.screenHeight * 0.1),
+                    AppFormTextField(
+                      hintText: 'Enter your username',
+                      hintLabel: 'Username',
+                      controller: _emailTextController,
+                      ctx: context,
+                      textInputAction: TextInputAction.done,
+                      keyboardType: TextInputType.emailAddress,
+                      onSubmit: (_) {
+                        FocusScope.of(context).requestFocus(new FocusNode());
+                      },
+                      validator: (email) {
+                        if (email.toString().trim() == "") {
+                          return 'Please enter username';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(
+                      height: 40,
+                    ),
+                    SizedBox(
+                      width: double.maxFinite,
+                      height: 50,
+                      child: CupertinoButton(
+                        color: Theme.of(context).primaryColor,
+                        child: Text(
+                          'Submit',
+                          style: TextStyle(color: Colors.white),
                         ),
-                        validator: (value) {
-                          if (value == "") {
-                            return 'Please enter password';
-                          }
-                          return null;
+                        onPressed: () {
+                          _handleForgotPassword();
                         },
                       ),
-                      SizedBox(
-                        height: 40,
-                      ),
-                      SizedBox(
-                        width: double.maxFinite,
-                        height: 50,
-                        child: CupertinoButton(
-                          color: Theme.of(context).primaryColor,
-                          child: Text(
-                            'Reset Password',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          onPressed: () {
-                            _handleForgotPassword();
-                          },
-                        ),
-                      ),
-                    ]),
-              ),
+                    ),
+                  ]),
             ),
           ),
         ),

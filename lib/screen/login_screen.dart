@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:claim_investigation/base/base_page.dart';
 import 'package:claim_investigation/models/user_model.dart';
 import 'package:claim_investigation/providers/auth_provider.dart';
+import 'package:claim_investigation/util/app_helper.dart';
 import 'package:claim_investigation/util/size_constants.dart';
 import 'package:claim_investigation/widgets/adaptive_widgets.dart';
 import 'package:claim_investigation/widgets/app_textfield.dart';
@@ -62,13 +63,10 @@ class _LoginScreenState extends BaseState<BasePage> {
 
   Future login() async {
     if (_validateInputs()) {
-      showLoadingDialog(hint: "Signing In...");
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       try {
-        final userModel = await authProvider.authenticate(
-            _userNameTextController.text.trim(),
+        await authProvider.authenticate(_userNameTextController.text.trim(),
             _passwordTextController.text.trim());
-         Navigator.pop(context);
       } catch (error) {
         Navigator.pop(context);
         print("mmm ${error.toString()}");
