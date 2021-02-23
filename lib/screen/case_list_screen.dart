@@ -1,6 +1,7 @@
 import 'package:claim_investigation/base/base_page.dart';
 import 'package:claim_investigation/providers/claim_provider.dart';
 import 'package:claim_investigation/screen/case_detail_screen.dart';
+import 'package:claim_investigation/util/app_log.dart';
 import 'package:claim_investigation/widgets/empty_message.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -45,8 +46,10 @@ class _CaseListState extends BaseState<CaseListScreen> {
       appBar: AppBar(
         title: Text('Case List'),
       ),
-      body: Consumer<ClaimProvider>(builder: (_, claimProvider, child) {
-        return ModalProgressHUD(
+      body: Consumer<ClaimProvider>(
+        builder: (_, claimProvider, child) {
+          AppLog.print('loaded');
+          return ModalProgressHUD(
             inAsyncCall: claimProvider.isLoading,
             child: claimProvider.listCases.isEmpty
                 ? EmptyMessage('No Case Found.')
@@ -72,7 +75,8 @@ class _CaseListState extends BaseState<CaseListScreen> {
 
                       return InkWell(
                         onTap: () {
-                          Get.toNamed(CaseDetailScreen.routeName, arguments: _case);
+                          Get.toNamed(CaseDetailScreen.routeName,
+                              arguments: _case);
                         },
                         child: Card(
                           child: ListTile(
@@ -152,8 +156,11 @@ class _CaseListState extends BaseState<CaseListScreen> {
                           ),
                         ),
                       );
-                    }));
-      }),
+                    },
+                  ),
+          );
+        },
+      ),
     );
   }
 }

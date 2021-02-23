@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'dart:async';
+import 'package:claim_investigation/models/case_model.dart';
 import 'package:claim_investigation/providers/auth_provider.dart';
 import 'package:claim_investigation/storage/app_pref.dart';
 import 'package:claim_investigation/util/app_enum.dart';
@@ -100,7 +101,9 @@ class ApiClient {
               response.stream.transform(utf8.decoder).listen((value) {
                 final jsonResponse = json.decode(value);
                 print(jsonResponse);
-                if (jsonResponse.containsKey('data') && jsonResponse['data'] != null && jsonResponse['data'].toString() != 'null') {
+                if (jsonResponse.containsKey('data') &&
+                    jsonResponse['data'] != null &&
+                    jsonResponse['data'].toString() != 'null') {
                   return Right(jsonResponse['data']);
                 } else {
                   if (jsonResponse.containsKey('status')) {
@@ -128,7 +131,9 @@ class ApiClient {
       final jsonResponse = json.decode(responseData.body);
       if (jsonResponse is List<dynamic>) {
         return Right(jsonResponse);
-      } else if (jsonResponse.containsKey('data') && jsonResponse['data'] != null && jsonResponse['data'].toString() != 'null') {
+      } else if (jsonResponse.containsKey('data') &&
+          jsonResponse['data'] != null &&
+          jsonResponse['data'].toString() != 'null') {
         return Right(jsonResponse['data']);
       } else {
         if (jsonResponse.containsKey('status')) {
@@ -156,7 +161,9 @@ class ApiClient {
       {@required String path,
       Encoding encoding,
       File file,
-      MimeMediaType mimeType}) async {
+      MimeMediaType mimeType,
+      CaseModel caseModel,
+      String uploadType}) async {
     Map<String, String> headers = Map();
     headers[HttpHeaders.contentTypeHeader] = "application/json";
 
@@ -173,14 +180,20 @@ class ApiClient {
       ),
     );
 
+    request.fields['username'] = _pref.user.username;
+    request.fields['uploadType'] = 'image';
+    request.fields['latitude'] = caseModel.latitude;
+    request.fields['longitude'] = caseModel.longitude;
+    request.fields['caseid'] = caseModel.caseId.toString();
+
     if (mimeType == MimeMediaType.image) {
       request.files.add(
-        await http.MultipartFile.fromPath('file', file.path,
-            contentType: http_parser.MediaType('image', 'jpeg')),
+        await http.MultipartFile.fromPath('uploadedFile', file.path),
+       // await http.MultipartFile.fromPath('uploadedFile', file.path,contentType: http_parser.MediaType('image', 'jpeg')),
       );
     } else if (mimeType == MimeMediaType.video) {
       request.files.add(
-        await http.MultipartFile.fromPath('file', file.path,
+        await http.MultipartFile.fromPath('uploadedFile', file.path,
             contentType: new http_parser.MediaType('video', 'mp4')),
       );
     }

@@ -26,6 +26,12 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>App needs camera permission to capture image for case detail</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>App needs location permission to submit case report</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>App needs location permission to submit case report</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>App needs microphone permission to record voice for case detail</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>App needs gallery permission to capture image for case detail</string>
 	<key>UILaunchStoryboardName</key>

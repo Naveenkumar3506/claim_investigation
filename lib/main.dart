@@ -1,5 +1,6 @@
 import 'package:claim_investigation/providers/auth_provider.dart';
 import 'package:claim_investigation/providers/claim_provider.dart';
+import 'package:claim_investigation/providers/multipart_upload_provider.dart';
 import 'package:claim_investigation/router/app_routes.dart';
 import 'package:claim_investigation/screen/home_screen.dart';
 import 'package:claim_investigation/screen/login_screen.dart';
@@ -48,6 +49,7 @@ class _PreClaimAppState extends State<PreClaimApp> {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => ClaimProvider()),
+        ChangeNotifierProvider(create: (_) => MultiPartUploadProvider()),
       ],
       child: Consumer<AuthProvider>(
         builder: (ctx, auth, _) => GetMaterialApp(

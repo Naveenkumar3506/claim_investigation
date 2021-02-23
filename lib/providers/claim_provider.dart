@@ -6,6 +6,7 @@ import 'package:claim_investigation/service/api_constants.dart';
 import 'package:claim_investigation/util/app_helper.dart';
 import 'package:claim_investigation/util/app_log.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ClaimProvider extends BaseProvider {
   List<CaseModel> _listCases = [];
@@ -13,7 +14,6 @@ class ClaimProvider extends BaseProvider {
   int fetchDataSize = 10;
   bool _isLoadMore = false;
   ScrollController scrollController;
-
 
   List<CaseModel> get listCases => _listCases;
 
@@ -30,6 +30,7 @@ class ClaimProvider extends BaseProvider {
   }
 
   Future<ReportModel> getDashBoard() async {
+    isLoading = true;
     final response = await super.apiClient.callWebService(
         path: ApiConstant.API_DASHBOARD_DETAIL,
         method: ApiMethod.POST,
@@ -37,7 +38,8 @@ class ClaimProvider extends BaseProvider {
           'username': pref.user.username,
         },
         withAuth: false);
-   return response.fold((l) {
+    isLoading = false;
+    return response.fold((l) {
       AppLog.print('left----> ' + l.toString());
       showErrorToast(l.toString());
       return null;
@@ -71,15 +73,14 @@ class ClaimProvider extends BaseProvider {
     isLoading = false;
     isLoadMore = false;
 
-     response.fold((l) {
+    response.fold((l) {
       AppLog.print('left----> ' + l.toString());
       showErrorToast(l.toString());
     }, (r) {
       AppLog.print('right----> ' + r.toString());
       final parsed = r.cast<Map<String, dynamic>>();
-      List<CaseModel> arrayCases = parsed
-          .map<CaseModel>((json) => CaseModel.fromJson(json))
-          .toList();
+      List<CaseModel> arrayCases =
+          parsed.map<CaseModel>((json) => CaseModel.fromJson(json)).toList();
       if (arrayCases.isNotEmpty) {
         if (isRefresh) {
           listCases.clear();
@@ -96,6 +97,31 @@ class ClaimProvider extends BaseProvider {
       } else {
         showSuccessToast(isLoadMore ? 'you are done' : 'No Recipes');
       }
+    });
+  }
+
+  Future<bool> submitReport(CaseModel caseModel) async {
+    showLoadingIndicator();
+    final response = await super.apiClient.callWebService(
+        path: ApiConstant.API_UPDATE_CASE_DETAILS,
+        method: ApiMethod.POST,
+        body: {
+          'username': pref.user.username,
+          'case_description': caseModel.caseDescription,
+          'longitude': caseModel.longitude,
+          'latitude': caseModel.latitude,
+          'capturedDate': DateFormat('yyyy-MM-dd').format(DateTime.now()),
+          'caseid': caseModel.caseId
+        },
+        withAuth: false);
+    hideLoadingIndicator();
+    return response.fold((l) {
+      AppLog.print('left----> ' + l.toString());
+      showErrorToast(l.toString());
+      return false;
+    }, (r) {
+      AppLog.print('right----> ' + r.toString());
+      return true;
     });
   }
 

@@ -66,17 +66,13 @@ class _HomeScreenState extends BaseState<HomeScreen> {
                 title,
                 maxLines: 2,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 14
-                ),
+                style: TextStyle(color: Colors.black, fontSize: 14),
               ),
             ),
           ),
         ],
       ),
-      onTap: () {
-      },
+      onTap: () {},
     );
   }
 
@@ -94,6 +90,9 @@ class _HomeScreenState extends BaseState<HomeScreen> {
       body: FutureProvider<ReportModel>(
         create: (ctx) =>
             Provider.of<ClaimProvider>(context, listen: false).getDashBoard(),
+        catchError: (_, obj) {
+          return ReportModel();
+        },
         child: Consumer<ReportModel>(
           builder: (_, reportModel, child) {
             if (reportModel == null) {
@@ -113,15 +112,18 @@ class _HomeScreenState extends BaseState<HomeScreen> {
                     ),
                     itemBuilder: (_, index) {
                       if (index == 0) {
-                        return itemView('PIV/PRV/LIVE count', reportModel.pivPrvLiveCount);
+                        return itemView(
+                            'PIV/PRV/LIVE count', reportModel.pivPrvLiveCount);
                       } else if (index == 1) {
                         return itemView('New', reportModel.reportModelNew);
                       } else if (index == 2) {
-                        return itemView('Claim Document Pickup', reportModel.claimDocumentPickup);
+                        return itemView('Claim Document Pickup',
+                            reportModel.claimDocumentPickup);
                       } else if (index == 3) {
                         return itemView('Closed', reportModel.closed);
                       } else if (index == 4) {
-                        return itemView('Actioned by Investigator', reportModel.actionedByInvestigator);
+                        return itemView('Actioned by Investigator',
+                            reportModel.actionedByInvestigator);
                       }
                       return itemView('', 0);
                     },
